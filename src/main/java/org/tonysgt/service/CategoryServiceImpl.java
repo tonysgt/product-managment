@@ -1,18 +1,26 @@
 package org.tonysgt.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.tonysgt.dto.CategoryDto;
 import org.tonysgt.entities.Category;
+import org.tonysgt.repository.CategoryRepository;
 
 import java.util.List;
 
 @ApplicationScoped
 public class CategoryServiceImpl implements CategoryService {
+
+    @Inject
+    CategoryRepository categoryRepository;
+
     @Override
     public CategoryDto getCategory(Long id) {
-        Category category = Category.findById(id);
-        return new CategoryDto(category.id, category.getName());
+        return categoryRepository.findByIdOptional(id)
+                .map(category -> new CategoryDto(category.id, category.getName()))
+                .orElseThrow(() -> new EntityNotFoundException("Product not found: " + id));
     }
 
     @Override
@@ -20,14 +28,14 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto addCategory(CategoryDto product) {
         Category category = new Category();
         category.setName(product.getName());
-        category.persist();
+        categoryRepository.persist(category);
         return new CategoryDto(category.id, category.getName());
     }
 
     @Override
     @Transactional
     public CategoryDto updateCategory(Long id, CategoryDto product) {
-        Category category = Category.findById(id);
+        Category category = categoryRepository.findById(id);
         category.setName(product.getName());
         return new CategoryDto(category.id, category.getName());
     }
@@ -35,12 +43,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleCategory(Long id) {
-        Category.deleteById(id);
+        categoryRepository.deleteById(id);
     }
 
     @Override
     public List<CategoryDto> getCategories() {
-        List<Category> list = Category.findAll().list();
-        return list.stream().map(category -> new CategoryDto(category.id, category.getName())).toList();
+        return categoryRepository.findAll()
+                .stream()
+                .map(category -> new CategoryDto(category.id, category.getName()))
+                .toList();
     }
 }

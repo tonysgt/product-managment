@@ -10,24 +10,10 @@ import jakarta.persistence.Table;
 public class User extends PanacheEntity {
 
     private String username;
-
     private String email;
     private String password;
     private String role;
 
-    /**
-     * Adds a new user to the database
-     * @param username the username
-     * @param password the unencrypted password (it is encrypted with bcrypt)
-     * @param role the comma-separated roles
-     */
-    public static void add(String username, String password, String role) {
-        User user = new User();
-        user.username = username;
-        user.password = BcryptUtil.bcryptHash(password);
-        user.role = role;
-        user.persist();
-    }
 
     public String getUsername() {
         return username;

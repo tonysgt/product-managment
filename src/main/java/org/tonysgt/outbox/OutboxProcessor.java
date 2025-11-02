@@ -18,7 +18,7 @@ public class OutboxProcessor {
 
     @Inject
     @Channel("outbox-event-out")
-    Emitter<OutboxEvent> priceEmitter;
+    Emitter<OutboxEvent> outboxEventEmitter;
 
     @Inject
     OutboxRepository outboxRepository;
@@ -29,11 +29,13 @@ public class OutboxProcessor {
         List<OutboxEvent> outboxEvents = outboxPoller.pollUnprocessed();
         for (OutboxEvent event : outboxEvents) {
             try {
-                priceEmitter.send(event);
+                Log.info("Processing outbox event " + event.getId());
+                outboxEventEmitter.send(event);
                 boolean b = outboxRepository.updateEventProcessingState(event);
                 if(!b){
                     Log.error("Error updating event!");
                 }
+                Log.info("Processed outbox event " + event.getId());
             } catch (Exception e) {
                 Log.error("Error publishing event", e);
             }

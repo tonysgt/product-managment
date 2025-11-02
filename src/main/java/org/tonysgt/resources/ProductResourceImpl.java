@@ -1,6 +1,7 @@
 package org.tonysgt.resources;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.tonysgt.dto.AddProductDto;
@@ -27,16 +28,19 @@ public class ProductResourceImpl implements ProductResource {
 
     @Override
     public ProductDto addProduct(AddProductDto product) {
+        Log.info("Adding product " + product.getName());
         return productService.addProduct(product);
     }
 
     @Override
     public ProductDto updateProduct(Long id, AddProductDto product) {
+        Log.info("Updating product " + product.getName());
         return productService.update(id, product);
     }
 
     @Override
     public void deleteProduct(Long id) {
+        Log.info("Deleting product " + id);
         productService.deleteProduct(id);
     }
 }

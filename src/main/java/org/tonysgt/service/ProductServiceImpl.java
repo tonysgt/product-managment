@@ -13,6 +13,8 @@ import org.tonysgt.dto.ProductDto;
 import org.tonysgt.entities.Category;
 import org.tonysgt.entities.OutboxEvent;
 import org.tonysgt.entities.Product;
+import org.tonysgt.repository.CategoryRepository;
+import org.tonysgt.repository.ProductRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,10 +27,10 @@ public class ProductServiceImpl implements ProductService {
     ObjectMapper mapper;
 
     @Inject
-    PanacheRepository<Product> productRepository;
+    ProductRepository productRepository;
 
     @Inject
-    PanacheRepository<Category> categoryRepository;
+    CategoryRepository categoryRepository;
 
     @Override
     public List<ProductDto> getProducts() {
@@ -109,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         boolean deleted = productRepository.deleteById(id);
         if (deleted) {
-            Log.infof("Entity with id {} deleted!", id);
+            Log.infof("Entity with id %d deleted!", id);
         }
     }
 }
