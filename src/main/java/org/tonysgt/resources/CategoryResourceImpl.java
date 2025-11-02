@@ -1,10 +1,12 @@
 package org.tonysgt.resources;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import org.tonysgt.dto.AddProductDto;
 import org.tonysgt.dto.ProductDto;
 
 import java.util.List;
 
+@ApplicationScoped
 public class CategoryResourceImpl implements CategoryResource {
     @Override
     public List<ProductDto> getAllCategories() {

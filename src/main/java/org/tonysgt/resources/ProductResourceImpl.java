@@ -1,5 +1,6 @@
 package org.tonysgt.resources;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.tonysgt.dto.AddProductDto;

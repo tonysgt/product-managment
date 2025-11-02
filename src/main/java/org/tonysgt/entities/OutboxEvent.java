@@ -1,12 +1,14 @@
 package org.tonysgt.entities;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Entity
@@ -14,20 +16,18 @@ import java.util.Map;
 public class OutboxEvent extends PanacheEntity {
 
     @Column(name = "aggregateid")
-    private String aggregateid;
+    private String aggregateId;
 
     @Column(name = "eventtype")
-    private String eventtype;
+    private String eventType;
 
     @Column(name = "payload")
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> payload;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "createdat")
-    private Instant createdat;
+    private LocalDateTime createdAt;
 
-    @ColumnDefault("false")
     @Column(name = "processed")
     private Boolean processed;
 
@@ -39,20 +39,20 @@ public class OutboxEvent extends PanacheEntity {
         this.id = id;
     }
 
-    public String getAggregateid() {
-        return aggregateid;
+    public String getAggregateId() {
+        return aggregateId;
     }
 
-    public void setAggregateid(String aggregateid) {
-        this.aggregateid = aggregateid;
+    public void setAggregateId(String aggregateid) {
+        this.aggregateId = aggregateid;
     }
 
-    public String getEventtype() {
-        return eventtype;
+    public String getEventType() {
+        return eventType;
     }
 
-    public void setEventtype(String eventtype) {
-        this.eventtype = eventtype;
+    public void setEventType(String eventtype) {
+        this.eventType = eventtype;
     }
 
     public Map<String, Object> getPayload() {
@@ -63,12 +63,12 @@ public class OutboxEvent extends PanacheEntity {
         this.payload = payload;
     }
 
-    public Instant getCreatedat() {
-        return createdat;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreatedat(Instant createdat) {
-        this.createdat = createdat;
+    public void setCreatedAt(LocalDateTime createdat) {
+        this.createdAt = createdat;
     }
 
     public Boolean getProcessed() {

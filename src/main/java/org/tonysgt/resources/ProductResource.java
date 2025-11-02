@@ -1,5 +1,6 @@
 package org.tonysgt.resources;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -26,7 +27,7 @@ public interface ProductResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("admin")
-    ProductDto addProduct(AddProductDto product);
+    ProductDto addProduct(AddProductDto product) ;
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)

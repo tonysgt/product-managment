@@ -1,17 +1,30 @@
 package org.tonysgt.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import org.tonysgt.dto.AddProductDto;
 import org.tonysgt.dto.ProductDto;
 import org.tonysgt.entities.Category;
+import org.tonysgt.entities.OutboxEvent;
 import org.tonysgt.entities.Product;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class ProductServiceImpl implements ProductService {
+
+
+    private final ObjectMapper mapper = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @Override
     public List<ProductDto> getProducts() {
@@ -49,7 +62,19 @@ public class ProductServiceImpl implements ProductService {
                 .ifPresent(category -> product.setCategory((Category) category));
         product.persist();
         Product createdProduct = Product.find("code=?1", createProductDto.getCode()).singleResult();
+        // Save an OutboxEvent in the same transaction
+        writeEventInOutbox(product, "ProductAdded");
         return getProductDto(createdProduct);
+    }
+
+    private void writeEventInOutbox(Product product, String eventType) {
+        OutboxEvent event = new OutboxEvent();
+        event.setAggregateId(product.id.toString());
+        event.setEventType(eventType);
+        event.setPayload(mapper.convertValue(product, new TypeReference<Map<String, Object>>() {})); // Serialize the order to JSON or similar format
+        event.setProcessed(false);
+        event.setCreatedAt(LocalDateTime.now());
+        event.persist();
     }
 
     @Override
@@ -61,6 +86,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(updateProduct.getPrice());
         product.setQuantity(updateProduct.getQuantity());
         Category.find("name=?1", updateProduct.getCategory()).singleResultOptional().ifPresent(category ->product.setCategory((Category) category));
+        writeEventInOutbox(product, "ProductUpdated");
         return getProductDto(product);
     }
 

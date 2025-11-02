@@ -1,13 +1,13 @@
 package org.tonysgt.service;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import org.tonysgt.dto.CategoryDto;
 import org.tonysgt.entities.Category;
-import org.tonysgt.entities.Product;
 
 import java.util.List;
 
+@ApplicationScoped
 public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto getCategory(Long id) {

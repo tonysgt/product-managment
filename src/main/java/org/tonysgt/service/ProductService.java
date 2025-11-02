@@ -1,5 +1,6 @@
 package org.tonysgt.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.tonysgt.dto.AddProductDto;
 import org.tonysgt.dto.ProductDto;
 
