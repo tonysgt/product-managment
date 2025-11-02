@@ -2,7 +2,7 @@ package org.tonysgt.dto;
 
 import java.math.BigDecimal;
 
-public class CreateProductDto {
+public class AddProductDto {
 
     private String code;
     private String name;

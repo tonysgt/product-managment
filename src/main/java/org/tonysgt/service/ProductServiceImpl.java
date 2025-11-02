@@ -3,7 +3,7 @@ package org.tonysgt.service;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
-import org.tonysgt.dto.CreateProductDto;
+import org.tonysgt.dto.AddProductDto;
 import org.tonysgt.dto.ProductDto;
 import org.tonysgt.entities.Category;
 import org.tonysgt.entities.Product;
@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDto createProduct(CreateProductDto createProductDto) {
+    public ProductDto addProduct(AddProductDto createProductDto) {
         Product product = new Product();
         product.setCode(createProductDto.getCode());
         product.setName(createProductDto.getName());
@@ -53,7 +53,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto update(Long id,CreateProductDto updateProduct) {
+    @Transactional
+    public ProductDto update(Long id, AddProductDto updateProduct) {
         Product product = Product.findById(id);
         product.setCode(updateProduct.getCode());
         product.setName(updateProduct.getName());
@@ -64,6 +65,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void deleteProduct(Long id) {
         boolean deleted = Product.deleteById(id);
         if (deleted) {

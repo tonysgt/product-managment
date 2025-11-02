@@ -1,10 +1,6 @@
 package org.tonysgt.dto;
 
-import org.tonysgt.entities.Product;
-
-import java.math.BigDecimal;
-
-public class ProductDto extends CreateProductDto {
+public class ProductDto extends AddProductDto {
 
     private Long id;
 
