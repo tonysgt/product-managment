@@ -6,6 +6,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.tonysgt.dto.AddProductDto;
 import org.tonysgt.dto.ProductDto;
@@ -31,14 +32,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getProducts() {
-        List<Product> list = productRepository.findAll().list();
-        return list.stream().map(ProductServiceImpl::getProductDto).toList();
+        return productRepository
+                .findAll()
+                .stream()
+                .map(ProductServiceImpl::getProductDto)
+                .toList();
     }
 
     @Override
     public ProductDto getProduct(Long id) {
-        Product product = productRepository.findById(id);
-        return getProductDto(product);
+        return productRepository.findByIdOptional(id)
+                .map(ProductServiceImpl::getProductDto)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found: " + id));
     }
 
     private static ProductDto getProductDto(Product product) {
@@ -61,23 +66,29 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(createProductDto.getPrice());
         product.setQuantity(createProductDto.getQuantity());
         categoryRepository.find("name=?1", createProductDto.getCategory())
-                .singleResultOptional()
+                .firstResultOptional()
                 .ifPresent(product::setCategory);
         productRepository.persist(product);
         Product createdProduct = productRepository.find("code=?1", createProductDto.getCode()).singleResult();
         // Save an OutboxEvent in the same transaction
-        writeEventInOutbox(product, "ProductAdded");
+        writeEventInOutbox(createdProduct, "ProductAdded");
         return getProductDto(createdProduct);
     }
 
     private void writeEventInOutbox(Product product, String eventType) {
-        OutboxEvent event = new OutboxEvent();
-        event.setAggregateId(product.id.toString());
-        event.setEventType(eventType);
-        event.setPayload(mapper.convertValue(product, new TypeReference<Map<String, Object>>() {})); // Serialize the order to JSON or similar format
-        event.setProcessed(false);
-        event.setCreatedAt(LocalDateTime.now());
-        event.persist();
+        try {
+            OutboxEvent event = new OutboxEvent();
+            event.setAggregateId(product.id.toString());
+            event.setEventType(eventType);
+            event.setPayload(mapper.convertValue(product, new TypeReference<Map<String, Object>>() {
+            })); // Serialize the order to JSON or similar format
+            event.setProcessed(false);
+            event.setCreatedAt(LocalDateTime.now());
+            event.persist();
+        } catch (Exception e) {
+            Log.error("Failed to write OutboxEvent for product id " + product.id, e);
+            throw e;
+        }
     }
 
     @Override
@@ -88,7 +99,7 @@ public class ProductServiceImpl implements ProductService {
         product.setName(updateProduct.getName());
         product.setPrice(updateProduct.getPrice());
         product.setQuantity(updateProduct.getQuantity());
-        categoryRepository.find("name=?1", updateProduct.getCategory()).singleResultOptional().ifPresent(product::setCategory);
+        categoryRepository.find("name=?1", updateProduct.getCategory()).firstResultOptional().ifPresent(product::setCategory);
         writeEventInOutbox(product, "ProductUpdated");
         return getProductDto(product);
     }
