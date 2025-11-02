@@ -1,10 +1,7 @@
 package org.tonysgt.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -23,20 +20,24 @@ import java.util.Map;
 @ApplicationScoped
 public class ProductServiceImpl implements ProductService {
 
+    @Inject
+    ObjectMapper mapper;
 
-    private final ObjectMapper mapper = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    @Inject
+    PanacheRepository<Product> productRepository;
+
+    @Inject
+    PanacheRepository<Category> categoryRepository;
 
     @Override
     public List<ProductDto> getProducts() {
-        List<Product> list = Product.findAll().list();
+        List<Product> list = productRepository.findAll().list();
         return list.stream().map(ProductServiceImpl::getProductDto).toList();
     }
 
     @Override
     public ProductDto getProduct(Long id) {
-        Product product = Product.findById(id);
+        Product product = productRepository.findById(id);
         return getProductDto(product);
     }
 
@@ -59,11 +60,11 @@ public class ProductServiceImpl implements ProductService {
         product.setName(createProductDto.getName());
         product.setPrice(createProductDto.getPrice());
         product.setQuantity(createProductDto.getQuantity());
-        Category.find("name=?1", createProductDto.getCategory())
+        categoryRepository.find("name=?1", createProductDto.getCategory())
                 .singleResultOptional()
-                .ifPresent(category -> product.setCategory((Category) category));
-        product.persist();
-        Product createdProduct = Product.find("code=?1", createProductDto.getCode()).singleResult();
+                .ifPresent(product::setCategory);
+        productRepository.persist(product);
+        Product createdProduct = productRepository.find("code=?1", createProductDto.getCode()).singleResult();
         // Save an OutboxEvent in the same transaction
         writeEventInOutbox(product, "ProductAdded");
         return getProductDto(createdProduct);
@@ -82,12 +83,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDto update(Long id, AddProductDto updateProduct) {
-        Product product = Product.findById(id);
+        Product product = productRepository.findById(id);
         product.setCode(updateProduct.getCode());
         product.setName(updateProduct.getName());
         product.setPrice(updateProduct.getPrice());
         product.setQuantity(updateProduct.getQuantity());
-        Category.find("name=?1", updateProduct.getCategory()).singleResultOptional().ifPresent(category ->product.setCategory((Category) category));
+        categoryRepository.find("name=?1", updateProduct.getCategory()).singleResultOptional().ifPresent(product::setCategory);
         writeEventInOutbox(product, "ProductUpdated");
         return getProductDto(product);
     }
@@ -95,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void deleteProduct(Long id) {
-        boolean deleted = Product.deleteById(id);
+        boolean deleted = productRepository.deleteById(id);
         if (deleted) {
             Log.infof("Entity with id {} deleted!", id);
         }
