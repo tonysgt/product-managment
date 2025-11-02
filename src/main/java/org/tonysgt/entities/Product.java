@@ -56,4 +56,12 @@ public class Product extends PanacheEntity {
     public void setCode(String code) {
         this.code = code;
     }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }
