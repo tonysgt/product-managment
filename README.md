@@ -82,7 +82,7 @@ Easily start your REST Web Services
 
 
 ####################
-# Startup progetto
+# Note aggiuntive startup progetto
 ####################
 Nella directory database sono presente gli script sql per generare il database e le tabelle e inserire le utenze admin e user:
 Le credenziali sono:
