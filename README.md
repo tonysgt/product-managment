@@ -101,5 +101,14 @@ password: user
 
 
 
+Il database predisposto per l'avvio è PostgreSQL.
+
+Per l'avvio del progetto in modo completo è necessaria pure la connessione ad una coda kafka, l'indirizzo del server kafka può essere impostato con la proprietà:
+
+`kafka.bootstrap.servers`
+
+presente nel file `application.properties`
+
+
 
 
