@@ -1,0 +1,1 @@
+INSERT INTO app_user (id, password, role, username, email) VALUES (2, '$2a$10$HZbiXlzRHFvL8yNVrKnLY.Y4vBcRtN6H2Hgy5iH8GpPY15wx42NWO', 'user', 'user', null);
