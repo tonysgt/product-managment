@@ -2,9 +2,7 @@ package org.tonysgt.resources;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.tonysgt.dto.AddProductDto;
 import org.tonysgt.dto.CategoryDto;
-import org.tonysgt.dto.ProductDto;
 import org.tonysgt.service.CategoryService;
 
 import java.util.List;

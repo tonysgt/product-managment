@@ -2,7 +2,6 @@ package org.tonysgt.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -10,7 +9,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.tonysgt.dto.AddProductDto;
 import org.tonysgt.dto.ProductDto;
-import org.tonysgt.entities.Category;
 import org.tonysgt.entities.OutboxEvent;
 import org.tonysgt.entities.Product;
 import org.tonysgt.repository.CategoryRepository;

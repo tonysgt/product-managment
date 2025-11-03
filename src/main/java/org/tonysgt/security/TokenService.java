@@ -7,20 +7,12 @@ import org.jose4j.jwt.JwtClaims;
 
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @RequestScoped
 public class TokenService {
-
-
-
     public String generateUserToken(String email, String username, String role) {
         return generateToken(email, username, role);
     }
-
-//    public String generateServiceToken(String serviceId, String serviceName) {
-//        return generateToken(serviceId,serviceName,Roles.SERVICE);
-//    }
 
     public String generateToken(String subject, String name, String... roles) {
         try {
@@ -32,7 +24,7 @@ public class TokenService {
             jwtClaims.setClaim(Claims.preferred_username.name(), name); //add more
             jwtClaims.setClaim(Claims.groups.name(), Arrays.asList(roles));
             jwtClaims.setAudience("using-jwt");
-            jwtClaims.setExpirationTimeMinutesInTheFuture(60); // TODO specify how long do you need
+            jwtClaims.setExpirationTimeMinutesInTheFuture(60);
 
 
             String token = TokenUtils.generateTokenString(jwtClaims);

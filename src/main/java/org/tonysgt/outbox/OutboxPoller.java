@@ -9,7 +9,6 @@ import java.util.List;
 public class OutboxPoller {
 
     public List<OutboxEvent> pollUnprocessed() {
-        //TODO pagination
         return OutboxEvent.find("processed=false").list();
     }
 }
