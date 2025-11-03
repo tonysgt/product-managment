@@ -1,0 +1,16 @@
+create table product
+(
+    id          bigserial  not null
+        primary key,
+    code        varchar(255)
+        constraint product_unique_code
+            unique,
+    description varchar(255),
+    name        varchar(255),
+    price       numeric(38, 2),
+    quantity    integer not null,
+    category_id bigint
+        constraint fkexqqeaksnmmku5py194ywp140
+            references category
+
+);

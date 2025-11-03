@@ -1,0 +1,6 @@
+create table category
+(
+    id   bigserial not null
+        primary key,
+    name varchar(255)
+);

@@ -1,0 +1,11 @@
+create table outboxevent
+(
+    id          bigserial not null
+        primary key,
+    aggregateid varchar(255),
+    eventtype   varchar(255),
+    payload     jsonb,
+    processed   boolean,
+    createdat   timestamp(6)
+
+);

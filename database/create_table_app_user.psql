@@ -1,0 +1,11 @@
+create table app_user
+(
+    id       bigserial not null
+        primary key,
+    email    varchar(255),
+    password varchar(255),
+    role     varchar(255),
+    username varchar(255)
+        constraint app_user_unique_username
+            unique
+);
