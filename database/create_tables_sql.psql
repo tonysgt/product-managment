@@ -1,0 +1,48 @@
+create table app_user
+(
+    id       bigserial not null
+        primary key,
+    email    varchar(255),
+    password varchar(255),
+    role     varchar(255),
+    username varchar(255)
+        constraint app_user_unique_username
+            unique
+);
+
+
+create table category
+(
+    id   bigserial not null
+        primary key,
+    name varchar(255)
+);
+
+create table product
+(
+    id          bigserial  not null
+        primary key,
+    code        varchar(255)
+        constraint product_unique_code
+            unique,
+    description varchar(255),
+    name        varchar(255),
+    price       numeric(38, 2),
+    quantity    integer not null,
+    category_id bigint
+        constraint fkexqqeaksnmmku5py194ywp140
+            references category
+
+);
+
+create table outboxevent
+(
+    id          bigserial not null
+        primary key,
+    aggregateid varchar(255),
+    eventtype   varchar(255),
+    payload     jsonb,
+    processed   boolean,
+    createdat   timestamp(6)
+
+);
