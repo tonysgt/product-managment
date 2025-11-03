@@ -32,14 +32,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto createUser(UpsertUserDto createUserDto) {
+    public UserDto createUser(UpsertUserDto upsertUserDto) {
+        if(upsertUserDto.getUsername() == null){
+            throw new IllegalArgumentException("Username is required");
+        }
+
+        if(upsertUserDto.getPassword() == null){
+            throw new IllegalArgumentException("Password is required");
+        }
+
+        if(upsertUserDto.getRole() == null){
+            throw new IllegalArgumentException("Role is required");
+        }
+
         User user = new User();
-        user.setUsername(createUserDto.getUsername());
-        user.setPassword(BcryptUtil.bcryptHash(createUserDto.getPassword()));
-        user.setEmail(createUserDto.getEmail());
-        user.setRole(createUserDto.getRole());
+        user.setUsername(upsertUserDto.getUsername());
+        user.setPassword(BcryptUtil.bcryptHash(upsertUserDto.getPassword()));
+        user.setEmail(upsertUserDto.getEmail());
+        user.setRole(upsertUserDto.getRole());
         userRepo.persist(user);
-        return userRepo.find("username=?1", createUserDto.getUsername()).firstResultOptional().map(this::getUserDto).orElseThrow(() -> new EntityNotFoundException("User not found: " + createUserDto.getUsername()));
+        return userRepo.find("username=?1", upsertUserDto.getUsername()).firstResultOptional().map(this::getUserDto).orElseThrow(() -> new EntityNotFoundException("User not found: " + upsertUserDto.getUsername()));
     }
 
     @Override
@@ -64,7 +76,7 @@ public class UserServiceImpl implements UserService {
     private UserDto getUserDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.id);
-        userDto.setUsername(userDto.getUsername());
+        userDto.setUsername(user.getUsername());
         userDto.setEmail(user.getEmail());
         userDto.setRole(user.getRole());
         return userDto;

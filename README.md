@@ -55,13 +55,9 @@ If you want to learn more about building native executables, please consult <htt
 
 ## Related Guides
 
-- Mutiny ([guide](https://quarkus.io/guides/mutiny-primer)): Write reactive applications with the modern Reactive
-  Programming library Mutiny
 - REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and
   Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on
   it.
-- Eclipse Vert.x ([guide](https://quarkus.io/guides/vertx)): Write reactive applications with the Vert.x API
-- JDBC Driver - H2 ([guide](https://quarkus.io/guides/datasource)): Connect to the H2 database via JDBC
 - Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code
   for Hibernate ORM via the active record or the repository pattern
 - SmallRye JWT ([guide](https://quarkus.io/guides/security-jwt)): Secure your applications with JSON Web Token
@@ -83,3 +79,27 @@ Create your first JPA entity
 Easily start your REST Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+
+
+####################
+# Startup progetto
+####################
+Nella directory database sono presente gli script sql per generare il database e le tabelle e inserire le utenze admin e user:
+Le credenziali sono:
+
+#### ADMIN
+
+username: admin
+
+password: admin
+
+#### USER
+
+username: user
+
+password: user
+
+
+
+
+
