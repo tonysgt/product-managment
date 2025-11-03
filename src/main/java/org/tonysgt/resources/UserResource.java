@@ -25,7 +25,7 @@ public interface UserResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @PermitAll
+    @RolesAllowed("admin")
     UserDto addUser(UpsertUserDto user) ;
 
     @PUT
